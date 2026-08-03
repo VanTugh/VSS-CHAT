@@ -45,10 +45,17 @@
         </div>
 
         <div class="input-group">
-          <!-- Ràng buộc 2 chiều với biến email, bắt buộc có thuộc tính name -->
-          <input type="text" [(ngModel)]="email" name="email" placeholder="Nhập tài khoản hoặc email">
-          <span class="error-msg" *ngIf="emailError" style="display: block;">{{ emailError }}</span>
-        </div>
+  <input 
+    type="text" 
+    placeholder="Nhập tài khoản/email"
+    [(ngModel)]="email" 
+    name="email"
+    [disabled]="isLocked"
+    (ngModelChange)="onInputChange()">
+    
+  <!-- Hiển thị lỗi nếu có (dùng *ngIf) -->
+  <span class="error-msg" *ngIf="emailError">{{ emailError }}</span>
+</div>
         
         <div class="input-group password-wrapper">
           <!-- Thay đổi linh hoạt type password/text -->
