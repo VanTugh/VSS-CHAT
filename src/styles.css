@@ -1,0 +1,402 @@
+@charset "UTF-8";
+/* =========================================
+   1. RESET & CẤU HÌNH CƠ BẢN
+   ========================================= */
+@import "@fortawesome/fontawesome-free/css/all.min.css";
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: "Segoe UI", Tahoma, Geneva, Verdana, sans-serif;
+}
+
+body {
+  background-color: #fefeff;
+}
+
+@keyframes page-enter {
+  0% {
+    opacity: 0;
+    transform: translateY(15px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+/* =========================================
+   2. BỐ CỤC KHUNG XÁC THỰC (Dùng cho mọi trang Auth)
+   ========================================= */
+.auth-container {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 100vh;
+  animation: page-enter 0.5s ease-out forwards;
+}
+
+.auth-left {
+  display: none;
+}
+
+.auth-right {
+  width: 100%;
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 20px;
+  position: relative;
+}
+
+/* =========================================
+   3. MENU NGÔN NGỮ & UI COMPONENTS DÙNG CHUNG
+   ========================================= */
+.language-selector {
+  position: absolute;
+  top: 20px;
+  right: 20px;
+  z-index: 10;
+  padding-bottom: 5px;
+}
+.language-selector .current-lang {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #64748b;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+.language-selector .current-lang:hover {
+  color: #5680F9;
+}
+.language-selector .lang-dropdown {
+  display: none;
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  transform: translateX(-50%);
+  margin-top: 8px;
+  background: #ffffff;
+  border-radius: 8px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  min-width: 140px;
+}
+.language-selector .lang-dropdown::before {
+  content: "";
+  position: absolute;
+  top: -10px;
+  left: 0;
+  width: 100%;
+  height: 15px;
+  background: transparent;
+}
+.language-selector .lang-dropdown::after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: 50%;
+  transform: translateX(-50%) rotate(45deg);
+  width: 12px;
+  height: 12px;
+  background: #ffffff;
+  border-left: 1px solid rgba(0, 0, 0, 0.05);
+  border-top: 1px solid rgba(0, 0, 0, 0.05);
+}
+.language-selector .lang-dropdown li {
+  padding: 12px 20px;
+  color: #334155;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.language-selector .lang-dropdown li:first-child {
+  border-radius: 8px 8px 0 0;
+}
+.language-selector .lang-dropdown li:last-child {
+  border-radius: 0 0 8px 8px;
+}
+.language-selector .lang-dropdown li:hover {
+  background: #f8fafc;
+  color: #5680F9;
+  font-weight: 600;
+}
+.language-selector:hover .lang-dropdown {
+  display: block;
+}
+
+/* =========================================
+   4. FORM CHUNG (Input, Button, Lỗi)
+   ========================================= */
+.auth-form {
+  width: 100%;
+  max-width: 569px;
+  padding: 40px 20px;
+  background: #ffffff;
+  border-radius: 20px;
+  box-shadow: 0px 10px 40px rgba(0, 0, 0, 0.08);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+}
+.auth-form .logo {
+  max-width: 200px;
+  margin-bottom: 20px;
+}
+.auth-form h2 {
+  color: #FF0033;
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin-bottom: 30px;
+  text-align: center;
+}
+.auth-form form {
+  width: 100%;
+}
+.auth-form .aligned-group {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
+.auth-form .aligned-group .input-group {
+  flex: 1;
+}
+.auth-form .input-group {
+  margin-bottom: 24px;
+  width: 100%;
+  gap: 10px;
+}
+.auth-form .input-group input {
+  width: 100%;
+  padding: 16px 24px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #334155;
+  outline: none;
+  transition: border-color 0.3s ease;
+  background-color: transparent;
+}
+.auth-form .input-group input:focus {
+  border-color: #5680F9;
+}
+.auth-form .input-group .error-msg {
+  display: none;
+  color: #FF0033;
+  font-size: 0.85rem;
+  text-align: left;
+  margin-top: 8px;
+  padding-left: 8px;
+  font-weight: 500;
+}
+.auth-form .input-group.password-wrapper {
+  position: relative;
+}
+.auth-form .input-group.password-wrapper input {
+  padding-right: 50px;
+}
+.auth-form .input-group .toggle-password {
+  position: absolute;
+  right: 20px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: #94a3b8;
+  cursor: pointer;
+  font-size: 1.1rem;
+  transition: color 0.3s;
+}
+.auth-form .input-group .toggle-password:hover {
+  color: #5680F9;
+}
+.auth-form .input-group .input-error {
+  border-color: #FF0033 !important;
+  background-color: #fff0f2;
+}
+.auth-form .custom-select-wrapper {
+  position: relative;
+  width: 100%;
+}
+.auth-form .custom-select-wrapper .custom-select {
+  width: 100%;
+  padding: 16px 24px;
+  border: 1.5px solid #cbd5e1;
+  border-radius: 10px;
+  font-size: 1rem;
+  color: #94a3b8;
+  cursor: pointer;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: all 0.3s ease;
+  background-color: transparent;
+}
+.auth-form .custom-select-wrapper .custom-select.active {
+  border-color: #5680F9;
+}
+.auth-form .custom-select-wrapper .custom-select.has-value {
+  color: #334155;
+}
+.auth-form .custom-select-wrapper .custom-options {
+  position: absolute;
+  top: calc(100% + 8px);
+  left: 0;
+  width: 100%;
+  background: #ffffff;
+  border-radius: 10px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+  list-style: none;
+  z-index: 100;
+  max-height: 200px;
+  overflow-y: auto;
+  opacity: 0;
+  visibility: hidden;
+  transform: translateY(-10px);
+  transition: all 0.3s ease;
+}
+.auth-form .custom-select-wrapper .custom-options.show {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(0);
+}
+.auth-form .custom-select-wrapper .custom-options li {
+  padding: 12px 24px;
+  color: #334155;
+  cursor: pointer;
+  transition: background 0.2s;
+}
+.auth-form .custom-select-wrapper .custom-options li:hover {
+  background: #f8fafc;
+  color: #5680F9;
+  font-weight: 600;
+}
+.auth-form .btn-submit {
+  width: 100%;
+  padding: 16px;
+  background-color: #FF0033;
+  color: white;
+  border: none;
+  border-radius: 10px;
+  font-size: 1.1rem;
+  font-weight: bold;
+  cursor: pointer;
+  margin-bottom: 20px;
+  transition: background-color 0.3s ease;
+}
+.auth-form .btn-submit:hover {
+  background-color: #d60029;
+}
+.auth-form .btn-disabled {
+  background-color: #cbd5e1;
+  cursor: not-allowed;
+  color: white;
+}
+.auth-form .btn-disabled:hover {
+  background-color: #cbd5e1;
+}
+.auth-form .form-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 30px;
+  font-size: 0.95rem;
+}
+.auth-form .form-actions .remember {
+  color: #64748b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  cursor: pointer;
+}
+.auth-form .form-actions .text-link {
+  color: #5680F9;
+  text-decoration: none;
+  font-weight: 600;
+}
+.auth-form .form-actions .text-link:hover {
+  text-decoration: underline;
+}
+.auth-form .hint-text {
+  color: #64748b;
+  font-size: 0.95rem;
+  text-align: center;
+}
+
+/* =========================================
+   5. RESPONSIVE GIAO DIỆN CHUNG (PC)
+   ========================================= */
+@media (min-width: 1024px) {
+  .auth-container {
+    flex-direction: row;
+  }
+  .auth-left {
+    display: flex;
+    flex: 6;
+    background-image: url("./assets/Rectangle 9192.png");
+    background-size: 100% 100%;
+    background-position: center;
+    background-repeat: no-repeat;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+  }
+  .auth-left .illustration {
+    width: 75%;
+    max-width: 842px;
+    height: auto;
+    -o-object-fit: contain;
+       object-fit: contain;
+    margin-bottom: 30px;
+  }
+  .auth-left .banner-content {
+    text-align: center;
+  }
+  .auth-left .banner-content h1, .auth-left .banner-content p {
+    color: #5680F9;
+    margin-bottom: 10px;
+  }
+  .auth-left .banner-content h1 {
+    font-size: 2rem;
+    font-weight: 700;
+  }
+  .auth-left .banner-content .pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 12px;
+    margin-top: 30px;
+  }
+  .auth-left .banner-content .pagination .dot {
+    border-radius: 50%;
+    cursor: pointer;
+    transition: all 0.3s ease;
+  }
+  .auth-left .banner-content .pagination .dot:not(.active) {
+    width: 10px;
+    height: 10px;
+    background-color: #b4c6fc;
+  }
+  .auth-left .banner-content .pagination .dot.active {
+    width: 14px;
+    height: 14px;
+    background-color: transparent;
+    border: 3px solid #5680F9;
+  }
+  .auth-right {
+    flex: 4;
+    padding: 0;
+  }
+  .auth-form {
+    padding: 50px 60px;
+  }
+  .auth-form .aligned-group {
+    flex-direction: row;
+    gap: 16px;
+  }
+  .language-selector {
+    top: 40px;
+    right: 60px;
+  }
+}/*# sourceMappingURL=styles.css.map */

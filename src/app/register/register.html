@@ -1,1 +1,106 @@
-<p>register works!</p>
+
+  <div class="auth-container">   
+    <!-- NỬA BÊN TRÁI -->
+    <div class="auth-left">
+      <div class="banner-content">
+        <img src="assets/illustration.svg" alt="VSS Illustration" class="illustration">
+        <h1>Hệ thống quản lý chat đa nền tảng</h1>
+        <p>Tiết kiệm thời gian tư vấn và chăm sóc khách hàng</p>
+        <div class="pagination">
+          <span class="dot active"></span>
+          <span class="dot"></span>
+          <span class="dot"></span>
+        </div>
+      </div>
+    </div>
+
+    <!-- NỬA BÊN PHẢI -->
+    <div class="auth-right">
+      
+      <!-- MENU CHỌN NGÔN NGỮ (DROPDOWN) -->
+      <div class="language-selector">
+        <div class="current-lang">
+          <i class="fa-solid fa-globe"></i>
+          <span class="text">Tiếng Việt</span>
+          <i class="fa-solid fa-caret-down"></i>
+        </div>
+        <ul class="lang-dropdown">
+          <li>Tiếng Việt</li>
+          <li>Tiếng Anh</li>
+        </ul>
+      </div>
+
+      <!-- FORM ĐĂNG KÝ -->
+      <div class="auth-form"> 
+        <img src="assets/logo.png" alt="VSS Logo" class="logo">
+        <h2>Đăng ký trải nghiệm</h2>
+        
+        <form action="#">
+          <!-- Hàng: Họ & Tên -->
+          <div class="aligned-group">
+            <div class="input-group">
+              <input type="text" placeholder="Nhập họ của bạn">
+            </div>
+            <div class="input-group">
+              <input type="text" placeholder="Nhập tên của bạn">
+            </div>
+          </div>
+
+          <div class="input-group">
+            <input type="text" placeholder="Nhập email làm việc">
+            <span class="error-msg"></span>
+          </div>
+
+          <!-- Hàng: Tên công ty & Quốc gia -->
+          <div class="aligned-group">
+            <div class="input-group">
+              <input type="text" placeholder="Nhập tên công ty">
+            </div>
+            
+            <!-- CUSTOM SELECT CHO QUỐC GIA -->
+            <div class="input-group custom-select-wrapper">
+              <div class="custom-select">
+                <span class="selected-text">Quốc gia</span>
+                <i class="fa-solid fa-chevron-down"></i>
+              </div>
+              <ul class="custom-options">
+                <li data-value="vn">Việt Nam</li>
+                <li data-value="kr">Hàn Quốc</li>
+                <li data-value="jp">Nhật Bản</li>
+                <li data-value="us">Hoa Kỳ</li>
+              </ul>
+              <input type="hidden" name="country">
+            </div>
+          </div>
+          
+          <!-- Hàng: Lĩnh vực (CUSTOM SELECT) -->
+          <div class="input-group custom-select-wrapper">
+            <div class="custom-select">
+              <span class="selected-text">Nhập lĩnh vực</span>
+              <i class="fa-solid fa-chevron-down"></i>
+            </div>
+            <ul class="custom-options">
+              <li data-value="it">Công nghệ thông tin</li>
+              <li data-value="finance">Tài chính - Ngân hàng</li>
+              <li data-value="edu">Giáo dục đào tạo</li>
+              <li data-value="ecommerce">Thương mại điện tử</li>
+              <li data-value="other">Khác</li>
+            </ul>
+            <input type="hidden" name="sector">
+          </div>
+
+          <div class="input-group">
+            <input type="text" placeholder="Nhập vị trí làm việc">
+          </div>
+          <div class="input-group">
+            <input type="text" placeholder="Mục đích bạn đến với website">
+          </div>
+
+          <button type="submit" class="btn-submit">Đăng ký</button>
+        </form>
+
+        <p class="hint-text">Bạn đã có tài khoản? <a routerLink="/login" class="text-link">Đăng nhập</a></p>
+      </div>
+    </div>
+
+  </div>
