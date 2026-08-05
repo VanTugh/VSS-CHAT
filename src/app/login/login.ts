@@ -11,7 +11,7 @@ import { RouterLink, Router } from '@angular/router';
   styleUrls: ['./login.scss']
 })
 export class Login implements OnInit, OnDestroy {
-  // --- 1. BIẾN TRÓI BUỘC DỮ LIỆU (DATA BINDING) ---
+
   email = '';
   password = '';
   isPasswordHidden = true;
@@ -32,17 +32,16 @@ export class Login implements OnInit, OnDestroy {
     { email: "sqa@vss.com", password: "test2026" }
   ];
 
-  // --- 3. BIẾN TRẠNG THÁI BẢO MẬT ---
+
   failedAttempts = 0;
   lockUntil = 0;
   penaltyLevel = 0;
   countdownInterval: any;
 
-  // Inject Router để chuyển trang thay vì window.location.href
+
   constructor(private router: Router) {}
 
-  // --- 4. LIFECYCLE HOOKS ---
-  // Chạy ngay khi Component vừa được khởi tạo (tương đương load trang)
+
   ngOnInit() {
     this.failedAttempts = parseInt(localStorage.getItem('failedAttempts') || '0', 10);
     this.lockUntil = parseInt(localStorage.getItem('lockUntil') || '0', 10);
@@ -51,19 +50,19 @@ export class Login implements OnInit, OnDestroy {
     this.checkLockStatus();
   }
 
-  // Chạy khi người dùng rời khỏi trang (quan trọng để dọn dẹp bộ nhớ)
+
   ngOnDestroy() {
     if (this.countdownInterval) {
       clearInterval(this.countdownInterval);
     }
   }
 
-  // --- 5. LOGIC GIAO DIỆN ---
+
   togglePasswordVisibility() {
     this.isPasswordHidden = !this.isPasswordHidden;
   }
 
-  // Hàm gọi khi gõ phím để dọn dẹp lỗi (Real-time update)
+
   onInputChange() {
     if (this.failedAttempts < this.MAX_ATTEMPTS) {
       this.generalError = '';
@@ -72,13 +71,13 @@ export class Login implements OnInit, OnDestroy {
     this.passwordError = '';
   }
 
-  // --- 6. LOGIC XỬ LÝ KHÓA TÀI KHOẢN ---
+
   checkLockStatus() {
     const now = Date.now();
     if (this.lockUntil > now) {
       this.startCountdown();
     } else if (this.lockUntil !== 0) {
-      // Đã qua thời gian phạt trong lúc đóng tab -> Xóa án
+
       this.resetPenalty(false);
     }
   }
@@ -92,7 +91,7 @@ export class Login implements OnInit, OnDestroy {
   }
 
   startCountdown() {
-    this.isLocked = true; // Angular sẽ tự động thêm attribute disabled bên HTML nhờ biến này
+    this.isLocked = true; 
     
     this.countdownInterval = setInterval(() => {
       const now = Date.now();
@@ -103,9 +102,9 @@ export class Login implements OnInit, OnDestroy {
       } else {
         // Hết phạt
         clearInterval(this.countdownInterval);
-        this.resetPenalty(false); // Xóa lock, giữ nguyên cấp độ phạt (penaltyLevel)
+        this.resetPenalty(false); 
         this.generalError = '';
-        this.isLocked = false; // Tự động mở khóa giao diện
+        this.isLocked = false;
       }
     }, 1000);
   }
@@ -116,15 +115,15 @@ export class Login implements OnInit, OnDestroy {
     this.failedAttempts = 0;
     this.lockUntil = 0;
     
-    if (fullReset) { // Xóa toàn bộ án tích khi đăng nhập thành công
+    if (fullReset) {
       localStorage.removeItem('penaltyLevel');
       this.penaltyLevel = 0;
     }
   }
 
-  // --- 7. LOGIC XỬ LÝ SUBMIT ---
+
   onLogin() {
-    // Chặn luồng nếu đang bị khóa
+
     if (this.isLocked) return;
 
     this.emailError = '';
@@ -135,7 +134,7 @@ export class Login implements OnInit, OnDestroy {
     const emailVal = this.email.trim();
     const passVal = this.password.trim();
 
-    // Validate Regex
+
     if (!emailVal) {
       this.emailError = 'Vui lòng nhập tài khoản hoặc email!';
       isValid = false;
@@ -155,14 +154,10 @@ export class Login implements OnInit, OnDestroy {
       );
 
       if (validUser) {
-        // --- ĐĂNG NHẬP THÀNH CÔNG ---
-        this.resetPenalty(true); // Ân xá toàn diện
+
+        this.resetPenalty(true);
         alert('Đăng nhập thành công! Đang chuyển hướng...');
-        
-        // Điều hướng bằng Router thay vì href
-        // this.router.navigate(['/dashboard']); 
       } else {
-        // --- ĐĂNG NHẬP SAI ---
         this.failedAttempts++;
         localStorage.setItem('failedAttempts', this.failedAttempts.toString());
 
@@ -171,7 +166,6 @@ export class Login implements OnInit, OnDestroy {
           this.lockUntil = Date.now() + penaltySeconds * 1000;
           localStorage.setItem('lockUntil', this.lockUntil.toString());
 
-          // Tăng mức phạt cho lần sau nếu chưa kịch trần
           if (this.penaltyLevel < this.PENALTY_TIERS.length - 1) {
             this.penaltyLevel++;
             localStorage.setItem('penaltyLevel', this.penaltyLevel.toString());
