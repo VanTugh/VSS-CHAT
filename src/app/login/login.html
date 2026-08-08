@@ -3,7 +3,6 @@
   <!-- NỬA BÊN TRÁI -->
   <div class="auth-left">
     <div class="banner-content">
-      <!-- Sửa lại đường dẫn ảnh minh họa, bỏ dấu ./ đi -->
       <img src="assets/illustration.svg" alt="VSS Illustration" class="illustration">
       <h1>Hệ thống quản lý chat đa nền tảng</h1>
       <p>Tiết kiệm thời gian tư vấn và chăm sóc khách hàng</p>
@@ -32,38 +31,37 @@
 
     <!-- FORM ĐĂNG NHẬP -->
     <div class="auth-form"> 
-      <!-- Sửa lại đường dẫn ảnh logo, bỏ dấu ./ đi -->
       <img src="assets/logo.png" alt="VSS Logo" class="logo">
       <h2>Đăng nhập vào tài khoản của bạn</h2>
       
-      <!-- Đổi từ action="#" sang (ngSubmit) -->
-      <form (ngSubmit)="onLogin()">
+      <!-- 1. KẾT NỐI FORM GROUP VÀO ĐÂY -->
+      <form [formGroup]="loginForm" (ngSubmit)="onLogin()">
         
-        <!-- Hộp báo lỗi chung dùng *ngIf để tự động ẩn/hiện -->
         <div class="error-msg" *ngIf="generalError" style="text-align: center; margin-bottom: 15px; display: block;">
           {{ generalError }}
         </div>
 
         <div class="input-group">
-  <input 
-    type="text" 
-    placeholder="Nhập tài khoản/email"
-    [(ngModel)]="email" 
-    name="email"
-    [disabled]="isLocked"
-    (ngModelChange)="onInputChange()">
-    
-  <!-- Hiển thị lỗi nếu có (dùng *ngIf) -->
-  <span class="error-msg" *ngIf="emailError">{{ emailError }}</span>
-</div>
+          <!-- 2. GẮN formControlName VÀ XÓA HẾT ngModel -->
+          <input 
+            type="text" 
+            placeholder="Nhập tài khoản/email"
+            formControlName="email">
+            
+          <span class="error-msg" *ngIf="emailError">{{ emailError }}</span>
+        </div>
         
         <div class="input-group password-wrapper">
-          <!-- Thay đổi linh hoạt type password/text -->
-          <input [type]="isPasswordHidden ? 'password' : 'text'" [(ngModel)]="password" name="password" placeholder="Nhập mật khẩu">
-          <!-- Bắt sự kiện click để gọi hàm đổi icon -->
+          <!-- 3. GẮN formControlName CHO PASSWORD -->
+          <input 
+            [type]="isPasswordHidden ? 'password' : 'text'" 
+            placeholder="Nhập mật khẩu"
+            formControlName="password">
+            
           <i class="fa-solid toggle-password" 
              [ngClass]="isPasswordHidden ? 'fa-eye-slash' : 'fa-eye'"
              (click)="togglePasswordVisibility()"></i>
+             
           <span class="error-msg" *ngIf="passwordError" style="display: block;">{{ passwordError }}</span>
         </div>
 
@@ -71,11 +69,10 @@
           <label class="remember">
             <input type="checkbox"> Lưu mật khẩu
           </label>
-          <!-- Dùng routerLink thay vì href -->
           <a routerLink="/forgot-password" class="text-link">Quên mật khẩu?</a>
         </div>
 
-        <!-- Ràng buộc trạng thái khóa nút -->
+        <!-- Khóa nút submit nếu isLocked = true -->
         <button type="submit" class="btn-submit" [disabled]="isLocked" [ngClass]="{'btn-disabled': isLocked}">
           Đăng nhập
         </button>
