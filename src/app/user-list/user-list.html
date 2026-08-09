@@ -1,1 +1,589 @@
-<p>user-list works!</p>
+<div class="user-page">
+
+  <!-- ========================================== -->
+  <!-- HEADER -->
+  <!-- ========================================== -->
+
+  <header class="page-header">
+
+    <div class="header-content">
+
+      <div>
+        <h1>User Management</h1>
+
+        <p>
+          Quản lý danh sách người dùng
+        </p>
+      </div>
+
+      <button
+        type="button"
+        class="btn-add"
+        (click)="addUser()">
+
+        <i class="fa-solid fa-plus"></i>
+
+        Thêm người dùng
+
+      </button>
+
+    </div>
+
+  </header>
+
+
+  <!-- ========================================== -->
+  <!-- MAIN -->
+  <!-- ========================================== -->
+
+  <main class="page-content">
+
+
+    <!-- ======================================== -->
+    <!-- TOOLBAR -->
+    <!-- ======================================== -->
+
+    <section class="toolbar">
+
+      <!-- SEARCH -->
+
+      <div class="search-box">
+
+        <i class="fa-solid fa-magnifying-glass"></i>
+
+        <input
+          type="text"
+          [(ngModel)]="searchKeyword"
+          (ngModelChange)="onSearch()"
+          placeholder="Tìm kiếm theo tên hoặc email..."
+        >
+
+      </div>
+
+
+      <!-- USER COUNT -->
+
+      <div class="user-count">
+
+        <strong>
+          {{ filteredUsers.length }}
+        </strong>
+
+        <span>
+          người dùng
+        </span>
+
+      </div>
+
+    </section>
+
+
+    <!-- ======================================== -->
+    <!-- ERROR -->
+    <!-- ======================================== -->
+
+    <div
+      class="error-box"
+      *ngIf="errorMessage">
+
+      <i class="fa-solid fa-circle-exclamation"></i>
+
+      <span>
+        {{ errorMessage }}
+      </span>
+
+      <button
+        type="button"
+        (click)="loadUsers()">
+
+        Thử lại
+
+      </button>
+
+    </div>
+
+
+    <!-- ======================================== -->
+    <!-- LOADING -->
+    <!-- ======================================== -->
+
+    <div
+      class="loading-box"
+      *ngIf="isLoading">
+
+      <div class="spinner"></div>
+
+      <p>
+        Đang tải danh sách người dùng...
+      </p>
+
+    </div>
+
+
+    <!-- ======================================== -->
+    <!-- TABLE -->
+    <!-- ======================================== -->
+
+    <section
+      class="table-card"
+      *ngIf="!isLoading && !errorMessage">
+
+
+      <!-- TABLE HEADER -->
+
+      <div class="table-header">
+
+        <div class="col-user">
+          Người dùng
+        </div>
+
+        <div class="col-email">
+          Email
+        </div>
+
+        <div class="col-action">
+          Thao tác
+        </div>
+
+      </div>
+
+
+      <!-- USER ROW -->
+
+      <div
+        class="user-row"
+        *ngFor="
+          let user of filteredUsers;
+          trackBy: trackByUserId
+        ">
+
+
+        <!-- USER -->
+
+        <div class="col-user">
+
+          <div class="user-info">
+
+            <img
+  [src]="user.avatar"
+  [alt]="user.first_name"
+  class="avatar"
+  (error)="handleImageError($event)"
+>
+
+            <div class="user-name">
+
+              <strong>
+                {{ user.first_name }}
+                {{ user.last_name }}
+              </strong>
+
+              <span>
+                ID #{{ user.id }}
+              </span>
+
+            </div>
+
+          </div>
+
+        </div>
+
+
+        <!-- EMAIL -->
+
+        <div class="col-email">
+
+          <span>
+            {{ user.email }}
+          </span>
+
+        </div>
+
+
+        <!-- ACTION -->
+
+        <div class="col-action">
+
+          <button
+            type="button"
+            class="btn-action btn-edit"
+            title="Chỉnh sửa"
+            (click)="editUser(user)">
+
+            <i class="fa-solid fa-pen"></i>
+
+          </button>
+
+
+          <button
+            type="button"
+            class="btn-action btn-delete"
+            title="Xóa"
+            (click)="deleteUser(user)">
+
+            <i class="fa-solid fa-trash"></i>
+
+          </button>
+
+        </div>
+
+      </div>
+
+
+      <!-- EMPTY -->
+
+      <div
+        class="empty-box"
+        *ngIf="filteredUsers.length === 0">
+
+        <i class="fa-solid fa-users"></i>
+
+        <h3>
+          Không tìm thấy người dùng
+        </h3>
+
+        <p>
+          Hãy thử tìm kiếm với từ khóa khác.
+        </p>
+
+      </div>
+
+
+      <!-- ====================================== -->
+      <!-- PAGINATION -->
+      <!-- ====================================== -->
+
+      <div
+        class="pagination"
+        *ngIf="filteredUsers.length > 0">
+
+        <button
+          type="button"
+          class="page-btn"
+          [disabled]="currentPage === 1"
+          (click)="goToPage(currentPage - 1)">
+
+          <i class="fa-solid fa-chevron-left"></i>
+
+        </button>
+
+
+        <button
+          type="button"
+          class="page-number active">
+
+          {{ currentPage }}
+
+        </button>
+
+
+        <button
+          type="button"
+          class="page-number"
+          *ngIf="totalPages > currentPage"
+          (click)="goToPage(currentPage + 1)">
+
+          {{ currentPage + 1 }}
+
+        </button>
+
+
+        <button
+          type="button"
+          class="page-btn"
+          [disabled]="currentPage === totalPages"
+          (click)="goToPage(currentPage + 1)">
+
+          <i class="fa-solid fa-chevron-right"></i>
+
+        </button>
+
+      </div>
+
+    </section>
+
+  </main>
+
+</div>
+
+<!-- ======================================== -->
+<!-- ADD USER MODAL -->
+<!-- ======================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="isAddUserModalOpen">
+
+  <div class="modal">
+
+    <!-- HEADER -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <h2>
+          Thêm người dùng
+        </h2>
+
+        <p>
+          Tạo người dùng mới
+        </p>
+
+      </div>
+
+      <button
+        type="button"
+        class="modal-close"
+        [disabled]="isCreatingUser"
+        (click)="closeAddUserModal()">
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <!-- BODY -->
+
+    <div class="modal-body">
+
+      <!-- ERROR -->
+
+      <div
+        class="modal-error"
+        *ngIf="createUserError">
+
+        <i class="fa-solid fa-circle-exclamation"></i>
+
+        <span>
+          {{ createUserError }}
+        </span>
+
+      </div>
+
+
+      <!-- NAME -->
+
+      <div class="form-group">
+
+        <label>
+          Tên người dùng
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="addUserForm.name"
+          placeholder="Nhập tên người dùng"
+          [disabled]="isCreatingUser"
+        >
+
+      </div>
+
+
+      <!-- JOB -->
+
+      <div class="form-group">
+
+        <label>
+          Công việc
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="addUserForm.job"
+          placeholder="Ví dụ: Frontend Developer"
+          [disabled]="isCreatingUser"
+        >
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+
+      <button
+        type="button"
+        class="btn-cancel"
+        [disabled]="isCreatingUser"
+        (click)="closeAddUserModal()">
+
+        Hủy
+
+      </button>
+
+
+      <button
+        type="button"
+        class="btn-confirm"
+        [disabled]="isCreatingUser"
+        (click)="submitAddUser()">
+
+        <i
+          *ngIf="isCreatingUser"
+          class="fa-solid fa-spinner fa-spin">
+        </i>
+
+        <span>
+          {{
+            isCreatingUser
+              ? 'Đang tạo...'
+              : 'Thêm người dùng'
+          }}
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
+
+<!-- ======================================== -->
+<!-- EDIT USER MODAL -->
+<!-- ======================================== -->
+
+<div
+  class="modal-overlay"
+  *ngIf="isEditUserModalOpen"
+  (click)="closeEditUserModal()">
+
+  <div
+    class="modal"
+    (click)="$event.stopPropagation()">
+
+    <!-- HEADER -->
+
+    <div class="modal-header">
+
+      <div>
+
+        <h2>
+          Chỉnh sửa người dùng
+        </h2>
+
+        <p>
+          Cập nhật thông tin người dùng
+        </p>
+
+      </div>
+
+
+      <button
+        type="button"
+        class="modal-close"
+        [disabled]="isUpdatingUser"
+        (click)="closeEditUserModal()">
+
+        <i class="fa-solid fa-xmark"></i>
+
+      </button>
+
+    </div>
+
+
+    <!-- BODY -->
+
+    <div class="modal-body">
+
+      <!-- ERROR -->
+
+      <div
+        class="modal-error"
+        *ngIf="updateUserError">
+
+        <i
+          class="fa-solid fa-circle-exclamation">
+        </i>
+
+        <span>
+          {{ updateUserError }}
+        </span>
+
+      </div>
+
+
+      <!-- NAME -->
+
+      <div class="form-group">
+
+        <label>
+          Tên người dùng
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="editUserForm.name"
+          placeholder="Nhập tên người dùng"
+          [disabled]="isUpdatingUser"
+        >
+
+      </div>
+
+
+      <!-- JOB -->
+
+      <div class="form-group">
+
+        <label>
+          Công việc
+        </label>
+
+        <input
+          type="text"
+          [(ngModel)]="editUserForm.job"
+          placeholder="Ví dụ: Frontend Developer"
+          [disabled]="isUpdatingUser"
+        >
+
+      </div>
+
+    </div>
+
+
+    <!-- FOOTER -->
+
+    <div class="modal-footer">
+
+      <button
+        type="button"
+        class="btn-cancel"
+        [disabled]="isUpdatingUser"
+        (click)="closeEditUserModal()">
+
+        Hủy
+
+      </button>
+
+
+      <button
+        type="button"
+        class="btn-confirm"
+        [disabled]="isUpdatingUser"
+        (click)="submitUpdateUser()">
+
+        <i
+          *ngIf="isUpdatingUser"
+          class="fa-solid fa-spinner fa-spin">
+        </i>
+
+        <span>
+          {{
+            isUpdatingUser
+              ? 'Đang cập nhật...'
+              : 'Lưu thay đổi'
+          }}
+        </span>
+
+      </button>
+
+    </div>
+
+  </div>
+
+</div>
